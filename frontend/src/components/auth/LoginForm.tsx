@@ -1,0 +1,105 @@
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Eye, EyeOff, TrendingUp } from 'lucide-react';
+import { useAuthStore } from '../../stores/authStore';
+import toast from 'react-hot-toast';
+
+export default function LoginForm() {
+  const navigate = useNavigate();
+  const { login } = useAuthStore();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password) {
+      toast.error('Veuillez remplir tous les champs');
+      return;
+    }
+    setLoading(true);
+    try {
+      // Mock login
+      await new Promise((r) => setTimeout(r, 800));
+      login(
+        { id: '1', email, name: 'Investisseur', createdAt: new Date().toISOString() },
+        'mock-jwt-token-12345'
+      );
+      toast.success('Connexion réussie');
+      navigate('/');
+    } catch {
+      toast.error('Identifiants incorrects');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-bg-primary flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="flex items-center justify-center gap-2 mb-8">
+          <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+            <TrendingUp size={22} className="text-white" />
+          </div>
+          <span className="text-2xl font-bold text-white">
+            Bours<span className="text-accent">IA</span>
+          </span>
+        </div>
+
+        <div className="bg-bg-card border border-border rounded-xl p-6">
+          <h2 className="text-xl font-semibold text-white mb-1">Connexion</h2>
+          <p className="text-sm text-text-secondary mb-6">Accédez à votre tableau de bord d'investissement</p>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-xs text-text-secondary mb-1">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-bg-primary border border-border rounded-lg px-3 py-2.5 text-sm text-text-primary placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
+                placeholder="votre@email.com"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs text-text-secondary mb-1">Mot de passe</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-bg-primary border border-border rounded-lg px-3 py-2.5 pr-10 text-sm text-text-primary placeholder-text-secondary focus:outline-none focus:border-accent transition-colors"
+                  placeholder="Mot de passe"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary"
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-2.5 bg-accent hover:bg-accent-hover disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              {loading ? 'Connexion...' : 'Se connecter'}
+            </button>
+          </form>
+
+          <p className="text-sm text-text-secondary text-center mt-4">
+            Pas encore de compte ?{' '}
+            <Link to="/register" className="text-accent hover:underline">
+              S'inscrire
+            </Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

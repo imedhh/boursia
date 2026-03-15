@@ -1,0 +1,11 @@
+{
+  "name": "boursia",
+  "version": "1.0.0",
+  "description": "BoursiA - Plateforme d'analyse boursière CAC 40",
+  "scripts": {
+    "install:all": "cd frontend && npm install && cd ../backend && npm install",
+    "build": "cd frontend && npm run build && cd ../backend && npm run build",
+    "start": "cd backend && npm start",
+    "dev": "cd backend && npm run dev"
+  }
+}
